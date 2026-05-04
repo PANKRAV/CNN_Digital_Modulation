@@ -321,7 +321,7 @@ class Dir_Reset :
 
     @dirs.setter
     def dirs(self, value) :
-        raise ReadOnly("dirs attribute cannot be setted")
+        raise ReadOnly("dirs attribute cannot be set")
 
 
     @property
@@ -330,7 +330,7 @@ class Dir_Reset :
 
     @pathlibdirs.setter
     def pathlibdirs(self, value) :
-        raise ReadOnly("pathlibdirs attribute cannot be setted")
+        raise ReadOnly("pathlibdirs attribute cannot be set")
 
 
     def __enter__(self) :

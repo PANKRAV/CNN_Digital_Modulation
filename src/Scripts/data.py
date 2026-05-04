@@ -1,8 +1,9 @@
-import sys
-sys.path.append("../modules")
-import utility
+import sys, os, pathlib
+#sys.path.append(os.getcwd())
 
+import src.modules.utility
 
+pathlib.Path.joinpath
 
 mod_families = {'ASK', 'BPSK', 'QPSK', 'HQAM', 'HQAM', 'HQAM', 'QAM', 'QAM', 'QAM', 'QAM', 'QAM', 'APSK', 'APSK', 'APSK', 'APSK'};
 M_values     = [8,     2,      4,      4,      16,     64,     16,    32,    64,    128,   256,   16,     32,     64,     128];
