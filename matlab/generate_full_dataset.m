@@ -27,28 +27,30 @@ disp('Generating');
 for m_idx = 1:length(mod_families)
     mod_fam = mod_families{m_idx};
     M = M_values(m_idx);
+    mod_label = sprintf('%d-%s', M, mod_fam);
+    disp(mod_label)
     
     for snr = snr_levels
+        if snr <= 10
+            snr_label = sprintf('Low%d', snr);
+        elseif snr <= 20
+            snr_label = sprintf('Medium%d', snr);
+        else
+            snr_label = sprintf('High%d', snr)'; 
+        end
         for pn = phase_noises
+            pn_label  = mat2str(pn > 0);   
             for iq = iq_imbalances
+                iq_label  = mat2str(iq > 0);
+
                 for jam = jammings
                     for i=1:10000
-                    
-                        % 1. Παραγωγή Σήματος
-                        mod_label = sprintf('%d-%s', M, mod_fam);
-                        
-                        
-                        pn_label  = mat2str(pn > 0);   
-                        iq_label  = mat2str(iq > 0);
                         jam_label = mat2str(jam > 0);
                         
-                        if snr <= 10
-                            snr_label = sprintf('Low%d', snr);
-                        elseif snr <= 20
-                            snr_label = sprintf('Medium%d', snr);
-                        else
-                            snr_label = sprintf('High%d', snr)'; 
-                        end
+                        % 1. Παραγωγή Σήματος
+                        
+                        
+                        
                         [rx_sig, ~] = generate_impaired_signal(mod_fam, M, num_symbols, snr, pn, iq, 5, jam);
                         
                         % 2. Ονομασία και Αποθήκευση Εικόνας
@@ -69,7 +71,8 @@ for m_idx = 1:length(mod_families)
                         
                         
                         % 4. Εγγραφή στο CSV
-                        fprintf(csv_fileID, '%d,%s,%.2f,%.2f,%.2f,%d\n', image_counter, mod_label, pn, iq, jam, snr_label);
+                        fprintf(csv_fileID, '%d,%s,%.2f,%.2f,%.2f,%d\n', image_counter, mod_label, pn, iq, jam, snr);
+
                         
                         image_counter = image_counter + 1;
                     end
