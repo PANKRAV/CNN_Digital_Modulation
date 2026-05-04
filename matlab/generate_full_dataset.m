@@ -21,7 +21,7 @@ jammings = [0, 0.2];              % 0 = Όχι, 0.2 = Ναι
 num_symbols = 1024;
 image_counter = 1;
 
-disp('Ξεκινάει η παραγωγή του Dataset. Παρακαλώ περιμένετε...');
+disp('Generating');
 
 % --- Βρόχοι (Loops) Παραγωγής ---
 for m_idx = 1:length(mod_families)
@@ -43,11 +43,11 @@ for m_idx = 1:length(mod_families)
                         jam_label = mat2str(jam > 0);
                         
                         if snr <= 10
-                            snr_label = sprintf('Low_%d', snr);
+                            snr_label = sprintf('Low%d', snr);
                         elseif snr <= 20
-                            snr_label = sprintf('Medium_%d', snr);
+                            snr_label = sprintf('Medium%d', snr);
                         else
-                            snr_label = sprintf('High_%d', snr)'; 
+                            snr_label = sprintf('High%d', snr)'; 
                         end
                         [rx_sig, ~] = generate_impaired_signal(mod_fam, M, num_symbols, snr, pn, iq, 5, jam);
                         
@@ -69,7 +69,7 @@ for m_idx = 1:length(mod_families)
                         
                         
                         % 4. Εγγραφή στο CSV
-                        fprintf(csv_fileID, '%s,%s,%s,%s,%s,%s\n', image_counter, mod_label, pn, iq, jam, snr_label);
+                        fprintf(csv_fileID, '%d,%s,%.2f,%.2f,%.2f,%d\n', image_counter, mod_label, pn, iq, jam, snr_label);
                         
                         image_counter = image_counter + 1;
                     end
