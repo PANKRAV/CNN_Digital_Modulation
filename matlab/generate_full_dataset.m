@@ -19,12 +19,12 @@ iq_imbalances = [0, 0.15];        % 0 = Όχι, 0.15 = Ναι
 jammings = [0, 0.2];              % 0 = Όχι, 0.2 = Ναι
 
 num_symbols = 1024;
-image_counter = 1;
+%image_counter = 1;
 
 disp('Generating');
 
 % --- Βρόχοι (Loops) Παραγωγής ---
-for m_idx = 1:length(mod_families)
+parfor m_idx = 1:length(mod_families)
     mod_fam = mod_families{m_idx};
     M = M_values(m_idx);
     mod_label = sprintf('%d-%s', M, mod_fam);
@@ -44,7 +44,7 @@ for m_idx = 1:length(mod_families)
                 iq_label  = mat2str(iq > 0);
 
                 for jam = jammings
-                    for i=1:10000
+                    for i=1:1000
                         jam_label = mat2str(jam > 0);
                         
                         % 1. Παραγωγή Σήματος
@@ -54,7 +54,7 @@ for m_idx = 1:length(mod_families)
                         [rx_sig, ~] = generate_impaired_signal(mod_fam, M, num_symbols, snr, pn, iq, 5, jam);
                         
                         % 2. Ονομασία και Αποθήκευση Εικόνας
-                        img_name = sprintf('img_%05d_%s_%s_%s_%s_%s.png', image_counter, mod_label, pn_label, iq_label, jam_label, snr_label);
+                        img_name = sprintf('img_%05d_%s_%s_%s_%s_%s.png', i, mod_label, pn_label, iq_label, jam_label, snr_label);
                         
                         % ΕΔΩ ΕΙΝΑΙ Η ΔΙΟΡΘΩΣΗ: Αποθήκευση στον φάκελο 'my_dataset'
                         filepath = fullfile('../data/images', img_name);
@@ -71,10 +71,10 @@ for m_idx = 1:length(mod_families)
                         
                         
                         % 4. Εγγραφή στο CSV
-                        fprintf(csv_fileID, '%d,%s,%.2f,%.2f,%.2f,%d\n', image_counter, mod_label, pn, iq, jam, snr);
+                        fprintf(csv_fileID, '%d,%s,%.2f,%.2f,%.2f,%d\n', i, mod_label, pn, iq, jam, snr);
 
                         
-                        image_counter = image_counter + 1;
+                        
                     end
                 end
             end
