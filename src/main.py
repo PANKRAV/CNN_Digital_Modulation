@@ -112,7 +112,7 @@ class CNN(nn.Module):
         #19->20
         self.fc1 = nn.Linear(32 * 28 * 28, out_features=32 * 28 * 28)
         self.fc2 = nn.Linear(32 * 28 * 28, 15)
-        self.full_control = self.fc1(self.fc2)
+        
         #21
         self.softmax = nn.Softmax2d()
         self.output_block = nn.Sequential(self.Avg_pool,
@@ -127,31 +127,15 @@ class CNN(nn.Module):
     
 
 
-    def forward(self, data):
-        data = self.layer1(data)
-        data = self.pool1(data)
-
-        data = self.layer2(data)
-        data = self.pool2(data)
-
-        data = self.layer3(data)
-        data = self.pool3(data)
-
-        data = self.layer4(data)
-        data = self.pool4(data)
-
-        data = self.layer5(data)
-        data = self.pool5(data)
-
-        data = self.layer6(data)
-        data = self.pool6(data)
-        
-        data = self.full_control(data)
-        data = self.pool7(data)
-
-        self.softmax(data)
-
-        return data
+    def forward(self, input):
+        input = self.block1(input)
+        input = self.block2(input)
+        input = self.block3(input)
+        input = self.block4(input)
+        input = self.block5(input)
+        input = self.block6(input)
+        input = self.output_block(input)
+        return input
 
 
 
