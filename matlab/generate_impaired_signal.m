@@ -88,7 +88,7 @@ function [rx_sig, tx_sig] = generate_impaired_signal(mod_family, M, num_symbols,
     I = real(rx_sig);
     Q = imag(rx_sig);
 
-    rx_sig = rx_sig + (1 + iq_gain_imb) * (Q * cos(p) - I * sin(p))*1j;
+    %rx_sig = rx_sig + (1 + iq_gain_imb) * (Q * cos(p) - I * sin(p))*1j;
 
     end
     
