@@ -9,6 +9,10 @@ jammings      = [0, 0.2];
 
 num_symbols = 1024;
 num_images  = 1000;
+task = 0;
+
+bool_labels = ["false","true"];
+
 
 
 if ~exist('../data/images', 'dir')
@@ -29,6 +33,7 @@ disp('Generating data')
 num_mods = length(mod_families);
 
 parfor m_idx = 1:num_mods
+    tic
 
     csv_lines = strings(24000, 1); idx = 1;
 
@@ -36,22 +41,24 @@ parfor m_idx = 1:num_mods
     M       = M_values(m_idx);
 
     mod_label = sprintf('%d-%s', M, mod_fam);
-
-    fprintf('Worker %d -> %s\n', getCurrentTask().ID, mod_label);
+    
+    if m_idx<9
+        fprintf('Worker %d -> %s\n', getCurrentTask().ID, mod_label);
+    else
+        fprintf('Worker %d -> %s New Task\n', getCurrentTask().ID, mod_label);
+    end
 
     for snr = snr_levels
-
-        snr_label = snr_labels(snr);
-
+        if snr <= 10
+            snr_label = sprintf('Low%d', snr);
+        elseif snr <= 20
+            snr_label = sprintf('Medium%d', snr);
+        else
+            snr_label = sprintf('High%d', snr)'; 
+        end
         for pn = phase_noises
 
-    snr_labels = containers.Map( ...
-        [5 15 25], ...
-        {'Low5', 'Medium15', 'High25'});
-
-    bool_labels = ["false","true"];
-
-            pn_label = bool_labels((pn > 0) + 1);
+            pn_label = bool_labels((pn > 0) + 1); %#ok<PFBNS>
 
             for iq = iq_imbalances
 
@@ -61,33 +68,19 @@ parfor m_idx = 1:num_mods
 
                     jam_label = bool_labels((jam > 0) + 1);
 
-                    local_dir = fullfile(output_dir, mod_label);
-
-                    if ~exist(local_dir, 'dir')
-                        mkdir(local_dir);
-                    end
 
                     for i = 1:num_images
 
-                        [rx_sig, ~] = generate_impaired_signal( ...
-                            mod_fam, M, num_symbols, ...
-                            snr, pn, iq, 5, jam);
+                        [rx_sig, ~] = generate_impaired_signal(mod_fam, M, num_symbols, snr, pn, iq, 5, jam);
 
                         img = render_constellation(rx_sig);
 
-                        img_name = sprintf( ...
-                            'img_%05d_%s_%s_%s_%s_%s.png', ...
-                            i, mod_label, ...
-                            pn_label, iq_label, ...
-                            jam_label, snr_label);
+                        img_name = sprintf('img_%05d_%s_%s_%s_%s_%s.png',i, mod_label, pn_label, iq_label,jam_label, snr_label);
 
-                        filepath = fullfile(local_dir, img_name);
 
-                        imwrite(img, filepath);
+                        imwrite(img, fullfile('../data/images', img_name));
 
-                        csv_lines(idx) = sprintf( ...
-                            '%d,%s,%.2f,%.2f,%.2f,%d', ...
-                            i, mod_label, pn, iq, jam, snr);
+                        csv_lines(idx) = sprintf( '%d,%s,%.2f,%.2f,%.2f,%d',i, mod_label, pn, iq, jam, snr);
 
                         idx = idx + 1;
 
@@ -97,8 +90,7 @@ parfor m_idx = 1:num_mods
         end
     end
 
-    csv_path = fullfile(output_dir, ...
-        sprintf('labels_worker_%02d.csv', m_idx));
+    csv_path = fullfile('../data', sprintf('labels_worker_%02d.csv', m_idx));
 
     fid = fopen(csv_path, 'w');
 
@@ -108,7 +100,10 @@ parfor m_idx = 1:num_mods
         fprintf(fid, '%s\n', csv_lines(k));
     end
 
+    fprintf('Worker %d -> %s finished in %.2f seconds\n', getCurrentTask().ID, mod_label, toc);
+    
     fclose(fid);
+
 
 end
 
