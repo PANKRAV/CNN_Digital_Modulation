@@ -81,14 +81,15 @@ function [rx_sig, tx_sig] = generate_impaired_signal(mod_family, M, num_symbols,
     end
     
     % 4. Εφαρμογή I/Q Imbalance
-    if iq_gain_imb > 0 || iq_phase_imb > 0
-        I = real(rx_sig);
-        Q = imag(rx_sig);
-        phase_imb_rad = deg2rad(iq_phase_imb);
-        
-        I_imb = I;
-        Q_imb = (1 + iq_gain_imb) * (-I * sin(phase_imb_rad) + Q * cos(phase_imb_rad));
-        rx_sig = I_imb + 1j * Q_imb;
+    if iq_gain_imb ~= 0 || iq_phase_imb ~= 0
+
+    p = (pi/180) * iq_phase_imb;
+
+    I = real(rx_sig);
+    Q = imag(rx_sig);
+
+    rx_sig = rx_sig + (1 + iq_gain_imb) * (Q * cos(p) - I * sin(p))*1j;
+
     end
     
     % 5. Εξωτερική Παρεμβολή (Jamming) - Προσθήκη τόνου
