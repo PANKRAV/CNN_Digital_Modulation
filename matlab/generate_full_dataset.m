@@ -5,6 +5,9 @@ if ~exist('../data/images', 'dir')
     mkdir('../data/images'); 
 end
 
+
+thread_pool = parpool("Threads", 16);
+
 % Δημιουργία του αρχείου Labels
 csv_fileID = fopen('../data/data.csv', 'w');
 fprintf(csv_fileID, 'Count,Modulation,Phase_Noise,IQ_Imbalance,Interference,SNR_Range\n');
@@ -25,6 +28,7 @@ disp('Generating');
 
 % --- Βρόχοι (Loops) Παραγωγής ---
 parfor m_idx = 1:length(mod_families)
+    start = tic;
     mod_fam = mod_families{m_idx};
     M = M_values(m_idx);
     mod_label = sprintf('%d-%s', M, mod_fam);
@@ -80,6 +84,10 @@ parfor m_idx = 1:length(mod_families)
             end
         end
     end
+    
+    stop = toc;
+    time = toc-tic;
+    sprintf('Finished %s in %.2f seconds\nThread Freed', mod_label, time);
 end
 
 fclose(csv_fileID);
