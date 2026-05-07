@@ -10,7 +10,7 @@ from modules.utility import timeit
 
 
 class CNN(nn.Module):
-    rel = nn.ReLU
+    rel = nn.ReLU()
     def __init__(self):
         super(CNN, self).__init__()
 
