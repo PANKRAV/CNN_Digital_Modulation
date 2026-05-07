@@ -1,6 +1,6 @@
 ergasia/**
 setup.bat
-images/**
+**/images
 *.csv
 *.rar
-__pycache__/
+**/__pycache__
