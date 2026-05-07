@@ -8,7 +8,7 @@ iq_imbalances = [0, 0.15];
 jammings      = [0, 0.2];
 
 num_symbols = 1024;
-num_images  = 10;
+num_images  = 1000;
 task = 0;
 
 bool_labels = ["false","true"];
