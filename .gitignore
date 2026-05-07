@@ -3,3 +3,4 @@ setup.bat
 images/**
 *.csv
 *.rar
+__pycache__/
