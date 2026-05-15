@@ -1,10 +1,11 @@
 import os, sys
 from torch import nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
+from torchvision.datasets import ImageFolder
 import torchvision
-import torchvision.transforms as transforms
-from modules.utility import timeit
+from torchvision import transforms
+from modules.utility import timeit, Dir_Reset
 
 
 
@@ -13,6 +14,9 @@ class CNN(nn.Module):
     rel = nn.ReLU()
     def __init__(self):
         super(CNN, self).__init__()
+
+
+        self.train_data, self.test_data, self.dataset = None
 
         #1->2
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1)
@@ -123,7 +127,7 @@ class CNN(nn.Module):
 
 
     def train(self, mode = True):
-        return super().train(mode)
+        ...
     
 
 
@@ -137,6 +141,18 @@ class CNN(nn.Module):
         input = self.output_block(input)
         return input
 
+
+    def loader(self, dir) :
+            with Dir_Reset(dir) as im :
+                data_transform = transforms.Compose([transforms.Grayscale(num_output_channels=1),
+                                     transforms.ToTensor()])
+                 
+                self.dataset = ImageFolder(dir, transform=data_transform)
+                train_size = int(0.7 * len(self.dataset))
+                test_size = len(self.dataset) - train_size
+                self.train_data, self.test_data = random_split(self.dataset, [train_size, test_size])
+                
+                
 
 
 def main(*args, **kwargs)-> None :
